@@ -10,13 +10,15 @@ import { UserModel } from 'src/user/user.model';
 import { AuthDto } from './dto/auth.dto';
 import { hash, compare, genSalt } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { AppLogger } from 'src/common/app.logger';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(UserModel)
     private readonly UserModel: ModelType<UserModel>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly appLogger: AppLogger
   ) {}
 
   async register(authDto: AuthDto) {
@@ -35,6 +37,8 @@ export class AuthService {
 
     const tokens = await this.issueTokenPair(newUser.id);
 
+    newUser.save();
+
     return {
       user: this.getUsersFields(newUser),
       ...tokens,
@@ -52,7 +56,12 @@ export class AuthService {
       throw new UnauthorizedException('Password is incorrect');
     }
 
-    return user;
+    const tokens = await this.issueTokenPair(user.id);
+
+    return {
+      user: this.getUsersFields(user),
+      ...tokens,
+    };
   }
 
   async issueTokenPair(userId: string) {
