@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,14 +9,14 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { UserModel } from 'src/user/user.model';
 import { AuthDto } from './dto/auth.dto';
 import { hash, compare, genSalt } from 'bcryptjs';
-import { AppLogger } from 'src/common/app.logger';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(UserModel)
     private readonly UserModel: ModelType<UserModel>,
-    private readonly logger: AppLogger
+    private readonly jwtService: JwtService
   ) {}
 
   async register(authDto: AuthDto) {
@@ -33,7 +32,13 @@ export class AuthService {
       email: authDto.email,
       password: hashPassword,
     });
-    return newUser.save();
+
+    const tokens = await this.issueTokenPair(newUser.id);
+
+    return {
+      user: this.getUsersFields(newUser),
+      ...tokens,
+    };
   }
 
   async login(authDto: AuthDto) {
@@ -48,5 +53,25 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  async issueTokenPair(userId: string) {
+    const data = { _id: userId };
+    const refreshToken = await this.jwtService.signAsync(data, {
+      expiresIn: '15d',
+    });
+
+    const accessToken = await this.jwtService.signAsync(data, {
+      expiresIn: '15m',
+    });
+    return { refreshToken, accessToken };
+  }
+
+  getUsersFields(user: UserModel) {
+    return {
+      _id: user._id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    };
   }
 }
