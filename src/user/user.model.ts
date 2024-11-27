@@ -9,10 +9,10 @@ export class UserModel extends TimeStamps {
   @prop({ required: true, unique: true })
   email: string;
 
-  @prop({ required: true, unique: true })
+  @prop({ required: true })
   password: string;
 
-  @prop({ default: false })
+  @prop({ default: false, required: false })
   isAdmin: boolean;
 
   @prop({ type: () => [String], default: [] })
