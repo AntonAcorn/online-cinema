@@ -87,12 +87,18 @@ export class AuthService {
 
   async getNewTokens({ refreshToken }: RefreshToken) {
     const payload = await this.jwtService.verifyAsync(refreshToken);
+    if (!payload) {
+      throw new UnauthorizedException('Token is not valid or expired');
+    }
     const { _id } = payload;
-    const user = this.UserModel.findById(_id);
+    const user = await this.UserModel.findById(_id);
     if (!user) {
       throw new UnauthorizedException('User is not found');
     }
-    const refreshedTokens = this.issueTokenPair(_id);
-    return refreshedTokens;
+    const refreshedTokens = await this.issueTokenPair(_id);
+    return {
+      user: this.getUsersFields(user),
+      ...refreshedTokens,
+    };
   }
 }
