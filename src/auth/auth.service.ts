@@ -4,13 +4,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectModel } from 'nestjs-typegoose';
+import { JwtService } from '@nestjs/jwt';
 import { ModelType } from '@typegoose/typegoose/lib/types';
+import { compare, genSalt, hash } from 'bcryptjs';
+import { InjectModel } from 'nestjs-typegoose';
+import { AppLogger } from 'src/common/app.logger';
 import { UserModel } from 'src/user/user.model';
 import { AuthDto } from './dto/auth.dto';
-import { hash, compare, genSalt } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
-import { AppLogger } from 'src/common/app.logger';
+import { RefreshToken } from './dto/refreshToken.dto';
 
 @Injectable()
 export class AuthService {
@@ -82,5 +83,16 @@ export class AuthService {
       email: user.email,
       isAdmin: user.isAdmin,
     };
+  }
+
+  async getNewTokens({ refreshToken }: RefreshToken) {
+    const payload = await this.jwtService.verifyAsync(refreshToken);
+    const { _id } = payload;
+    const user = this.UserModel.findById(_id);
+    if (!user) {
+      throw new UnauthorizedException('User is not found');
+    }
+    const refreshedTokens = this.issueTokenPair(_id);
+    return refreshedTokens;
   }
 }
