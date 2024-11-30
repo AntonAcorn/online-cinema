@@ -10,7 +10,6 @@ export class UserService {
   ) {}
 
   async getById(id: string) {
-    const profile = this.UserModel.findById(id);
-    return profile;
+    return this.UserModel.findById(id);
   }
 }

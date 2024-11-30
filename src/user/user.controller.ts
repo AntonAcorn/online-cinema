@@ -1,8 +1,8 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { UserService } from './user.service';
 import { Role } from 'src/common/role';
-import { Roles } from "./decorators/roles.decorator";
+import { User } from './decorators/user.decorator';
 
 @Controller('users')
 export class UserController {
@@ -10,11 +10,7 @@ export class UserController {
 
   @Get('profile')
   @Auth(Role.Admin)
-  async getProfile(@Req() request: Request) {
-    const authHeader = request.headers;
-
-    console.log('Token:', authHeader);
-
-    return 'Hey admin';
+  async getProfile(@User('_id') id: string) {
+    return this.userService.getById(id);
   }
 }
