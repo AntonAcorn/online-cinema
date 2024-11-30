@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ModelType } from '@typegoose/typegoose/lib/types';
@@ -12,13 +13,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly UserModel: ModelType<UserModel>
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken,
-      ignoreExpiration: true,
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET'),
     });
   }
 
-  async validate({ _id }: Pick<UserModel, '_id'>) {
-    return this.UserModel.findById(_id);
+  async validate(payload: any) {
+    const { _id } = payload.data;
+    const user = await this.UserModel.findById(_id).select('_id email role');
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    return user;
   }
 }

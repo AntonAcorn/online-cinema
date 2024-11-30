@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { prop } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+import { Role } from 'src/common/role';
 
 export interface UserModel extends Base {}
 
@@ -12,8 +13,8 @@ export class UserModel extends TimeStamps {
   @prop({ required: true })
   password: string;
 
-  @prop({ default: false, required: false })
-  isAdmin: boolean;
+  @prop({ default: Role.User, required: false })
+  role: Role;
 
   @prop({ type: () => [String], default: [] })
   favorites?: [];

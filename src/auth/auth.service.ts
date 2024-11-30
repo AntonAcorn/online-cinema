@@ -12,6 +12,7 @@ import { AppLogger } from 'src/common/app.logger';
 import { UserModel } from 'src/user/user.model';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshToken } from './dto/refreshToken.dto';
+import { Role } from 'src/common/role';
 
 @Injectable()
 export class AuthService {
@@ -34,11 +35,12 @@ export class AuthService {
     const newUser = new this.UserModel({
       email: authDto.email,
       password: hashPassword,
+      role: Role.User,
     });
 
-    const tokens = await this.issueTokenPair(newUser.id);
+    const tokens = await this.issueTokenPair(newUser.id, newUser.role);
 
-    newUser.save();
+    await newUser.save();
 
     return {
       user: this.getUsersFields(newUser),
@@ -57,7 +59,7 @@ export class AuthService {
       throw new UnauthorizedException('Password is incorrect');
     }
 
-    const tokens = await this.issueTokenPair(user.id);
+    const tokens = await this.issueTokenPair(user.id, user.role);
 
     return {
       user: this.getUsersFields(user),
@@ -65,15 +67,43 @@ export class AuthService {
     };
   }
 
-  async issueTokenPair(userId: string) {
-    const data = { _id: userId };
-    const refreshToken = await this.jwtService.signAsync(data, {
-      expiresIn: '15d',
-    });
+  async getNewTokens({ refreshToken }: RefreshToken) {
+    let payload;
+    try {
+      payload = await this.jwtService.verifyAsync(refreshToken);
+    } catch {
+      throw new UnauthorizedException('Token is invalid or expired');
+    }
 
-    const accessToken = await this.jwtService.signAsync(data, {
-      expiresIn: '15m',
-    });
+    const { data } = payload;
+    const { _id, role } = data;
+
+    const user = await this.UserModel.findById(_id);
+    if (!user) {
+      throw new UnauthorizedException('User is not found');
+    }
+    const refreshedTokens = await this.issueTokenPair(_id, role);
+    return {
+      user: this.getUsersFields(user),
+      ...refreshedTokens,
+    };
+  }
+
+  async issueTokenPair(userId: string, role: string) {
+    const data = { _id: userId, role: role };
+    const refreshToken = await this.jwtService.signAsync(
+      { data },
+      {
+        expiresIn: '15d',
+      }
+    );
+
+    const accessToken = await this.jwtService.signAsync(
+      { data },
+      {
+        expiresIn: '1h',
+      }
+    );
     return { refreshToken, accessToken };
   }
 
@@ -81,24 +111,7 @@ export class AuthService {
     return {
       _id: user._id,
       email: user.email,
-      isAdmin: user.isAdmin,
-    };
-  }
-
-  async getNewTokens({ refreshToken }: RefreshToken) {
-    const payload = await this.jwtService.verifyAsync(refreshToken);
-    if (!payload) {
-      throw new UnauthorizedException('Token is not valid or expired');
-    }
-    const { _id } = payload;
-    const user = await this.UserModel.findById(_id);
-    if (!user) {
-      throw new UnauthorizedException('User is not found');
-    }
-    const refreshedTokens = await this.issueTokenPair(_id);
-    return {
-      user: this.getUsersFields(user),
-      ...refreshedTokens,
+      role: user.role,
     };
   }
 }

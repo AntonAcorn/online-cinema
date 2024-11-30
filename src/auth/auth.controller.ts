@@ -2,10 +2,10 @@ import {
   Body,
   Controller,
   HttpCode,
+  Post,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshToken } from './dto/refreshToken.dto';
