@@ -6,7 +6,6 @@ import { TypegooseModule } from 'nestjs-typegoose';
 import { getMongoDbConfig } from './config/mongo.config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { GenreService } from './genre/genre.service';
 import { GenreModule } from './genre/genre.module';
 
 @Module({
@@ -22,6 +21,6 @@ import { GenreModule } from './genre/genre.module';
     GenreModule,
   ],
   controllers: [AppController],
-  providers: [AppService, GenreService],
+  providers: [AppService],
 })
 export class AppModule {}

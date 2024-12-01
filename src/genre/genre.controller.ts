@@ -1,6 +1,18 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { GenreService } from './genre.service';
+import { CreateGenreDto } from './dto/createGenre.dto';
+import { UpdateGenreDto } from './dto/updateGenre.dto';
+import { Role } from 'src/user/role';
 
 @Controller('genre')
 export class GenreController {
@@ -12,37 +24,42 @@ export class GenreController {
     return this.genreService.getAllGenres(option);
   }
 
-  // @Get('slug')
-  // @Auth()
-  // async getBySlug() {
-  //   return this.genreService.getBySlug();
-  // }
+  @Get('slug/:slug')
+  @Auth()
+  async getBySlug(@Param('slug') slug: string) {
+    return this.genreService.getGenreBySlug(slug);
+  }
 
-  // @Get('collections')
-  // @Auth()
-  // async getCollections() {
-  //   return this.genreService.getCollections();
-  // }
+  @Get('collections')
+  @Auth()
+  async getCollections() {
+    return this.genreService.getCollections();
+  }
 
-  // @Get(':id')
-  // @Auth(Role.Admin)
-  // async getById() {
-  //   return this.genreService.getById();
-  // }
+  @Get(':id')
+  @Auth(Role.Admin)
+  async getById(@Param('id') id: string) {
+    return this.genreService.getGenreById(id);
+  }
 
-  // @Post()
-  // @Auth(Role.Admin)
-  // async create() {
-  //   return this.genreService.create();
-  // }
+  @Post('create')
+  @Auth(Role.Admin)
+  async createGenre(@Body() createGenreDto: CreateGenreDto) {
+    return this.genreService.createGenre(createGenreDto);
+  }
 
-  // @Put(':id')
-  // @Auth(Role.Admin)
-  // async update() {
-  // 	return this.genreService.update(id, updateDto: UpdateDto)
-  // }
+  @Put('update/:id')
+  @Auth(Role.Admin)
+  async update(
+    @Param('id') id: string,
+    @Body() updateGenreDto: UpdateGenreDto
+  ) {
+    return this.genreService.updateGenre(id, updateGenreDto);
+  }
 
-  // @Delete(':id')
-  // @Auth(Role.Admin)
-  // async deleteById() {}
+  @Delete('delete/:id')
+  @Auth(Role.Admin)
+  async deleteById(@Param('id') id: string) {
+    return this.genreService.deleteGenreById(id);
+  }
 }
