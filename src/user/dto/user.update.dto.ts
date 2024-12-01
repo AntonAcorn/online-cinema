@@ -5,7 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Role } from 'src/common/role';
+import { Role } from 'src/user/role';
 
 export class UpdateUserDto {
   @IsEmpty()

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { prop } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { Role } from 'src/common/role';
+import { Role } from 'src/user/role';
 
 export interface UserModel extends Base {}
 

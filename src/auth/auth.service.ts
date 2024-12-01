@@ -9,10 +9,10 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { InjectModel } from 'nestjs-typegoose';
 import { AppLogger } from 'src/common/app.logger';
+import { Role } from 'src/user/role';
 import { UserModel } from 'src/user/user.model';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshToken } from './dto/refreshToken.dto';
-import { Role } from 'src/common/role';
 
 @Injectable()
 export class AuthService {

@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
-import { Role } from 'src/common/role';
+import { Role } from 'src/user/role';
 
 export class AuthDto {
   @IsNotEmpty()
