@@ -37,6 +37,35 @@ export class UserService {
       throw new BadRequestException(error);
     }
   }
+
+  async getAllUsers(searhTerm?: string) {
+    let options = {};
+    if (searhTerm) {
+      options = {
+        $or: [
+          {
+            email: new RegExp(searhTerm, 'i'),
+          },
+        ],
+      };
+    }
+
+    const query = this.UserModel.find(options)
+      .select('-password -__v')
+      .sort({ createdAd: 'desc' });
+
+    console.log(query.getQuery());
+    console.log(query.getOptions());
+    return query;
+  }
+
+  async getConutAllUsers() {
+    return this.UserModel.find().countDocuments();
+  }
+
+  async deleteById(id: string) {
+    return this.UserModel.findByIdAndDelete(id);
+  }
 }
 
 async function encryptPassword(password: string) {
