@@ -12,6 +12,7 @@ db.createUser({
 });
 
 db.createCollection('User');
+db.createCollection('Genre');
 
 db.User.insertOne({
   username: 'test_user',
