@@ -1,4 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { ModelType } from '@typegoose/typegoose/lib/types';
+import { InjectModel } from 'nestjs-typegoose';
+import { ActorModel } from './actor.model';
 
 @Injectable()
-export class ActorService {}
+export class ActorService {
+  constructor(
+    @InjectModel(ActorModel) private readonly ActorModel: ModelType<ActorModel>
+  ) {}
+  async getAll(searchTerm?: string) {
+    let options = {};
+    if (searchTerm) {
+      options = {
+        $or: [
+          {
+            name: RegExp(searchTerm, 'i'),
+          },
+          {
+            slug: RegExp(searchTerm, 'i'),
+          },
+        ],
+      };
+    }
+    return this.ActorModel.find(options);
+  }
+}
