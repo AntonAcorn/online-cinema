@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ActorService } from './actor.service';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Role } from 'src/user/role';
-import { CreateActorDto } from './dto/actor.dto';
+import { ActorService } from './actor.service';
+import { CreateActorDto } from './dto/createActor.dto';
+import { UpdateActorDto } from './dto/updateActor.dto';
 
 @Controller('actors')
 export class ActorController {
@@ -26,14 +27,18 @@ export class ActorController {
     return this.actorService.getActorById(id);
   }
 
-  @Post()
+  @Post('create')
   @Auth(Role.Admin)
   async createActor(@Body() createActorDto: CreateActorDto) {
     return this.actorService.createActor(createActorDto);
   }
 
-  async updateActor() {
-    return this.actorService.updateActor();
+  @Put('update/:id')
+  async updateActor(
+    @Param('id') id: string,
+    @Body() updateActorDto: UpdateActorDto
+  ) {
+    return this.actorService.updateActor(id, updateActorDto);
   }
 
   async deleteActor() {

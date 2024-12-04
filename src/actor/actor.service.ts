@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { ActorModel } from './actor.model';
-import { CreateActorDto } from './dto/actor.dto';
+import { CreateActorDto } from './dto/createActor.dto';
+import { UpdateActorDto } from './dto/updateActor.dto';
 
 @Injectable()
 export class ActorService {
@@ -50,5 +51,18 @@ export class ActorService {
     });
 
     return actorToCreate.save();
+  }
+
+  async updateActor(updateActorDto: UpdateActorDto, id: string) {
+    const actorToUpdate = await this.ActorModel.findById(id);
+    if (!actorToUpdate) {
+      throw new NotFoundException('Actor was not found');
+    }
+
+    actorToUpdate.name = updateActorDto.name;
+    actorToUpdate.slug = updateActorDto.slug;
+    actorToUpdate.photo = updateActorDto.photo;
+
+    return actorToUpdate.save();
   }
 }
