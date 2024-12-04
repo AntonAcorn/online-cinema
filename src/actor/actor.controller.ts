@@ -18,8 +18,10 @@ export class ActorController {
     return this.actorService.getBySlug(slug);
   }
 
-  async getById() {
-    return this.actorService.getById();
+  @Get(':id')
+  @Auth()
+  async getById(@Param('id') id: string) {
+    return this.actorService.getActorById(id);
   }
 
   async createActor() {

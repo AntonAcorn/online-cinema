@@ -32,4 +32,12 @@ export class ActorService {
     }
     return actorBySlug;
   }
+
+  async getActorById(id: string) {
+    const actorById = await this.ActorModel.findById(id);
+    if (!actorById) {
+      throw new NotFoundException('Actor was not found');
+    }
+    return actorById;
+  }
 }
