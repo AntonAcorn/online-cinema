@@ -5,7 +5,7 @@ export class CreateActorDto {
   name: string;
 
   @IsString()
-  slig: string;
+  slug: string;
 
   @IsString()
   photo: string;

@@ -1,6 +1,8 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ActorService } from './actor.service';
 import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Role } from 'src/user/role';
+import { CreateActorDto } from './dto/actor.dto';
 
 @Controller('actors')
 export class ActorController {
@@ -24,8 +26,10 @@ export class ActorController {
     return this.actorService.getActorById(id);
   }
 
-  async createActor() {
-    return this.actorService.createActor();
+  @Post()
+  @Auth(Role.Admin)
+  async createActor(@Body() createActorDto: CreateActorDto) {
+    return this.actorService.createActor(createActorDto);
   }
 
   async updateActor() {
