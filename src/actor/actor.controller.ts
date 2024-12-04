@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ActorService } from './actor.service';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 
@@ -12,8 +12,10 @@ export class ActorController {
     return this.actorService.getAll(option);
   }
 
-  async getBySlug() {
-    return this.actorService.getBySlug();
+  @Get('slug/:slug')
+  @Auth()
+  async getBySlug(@Param('slug') slug: string) {
+    return this.actorService.getBySlug(slug);
   }
 
   async getById() {

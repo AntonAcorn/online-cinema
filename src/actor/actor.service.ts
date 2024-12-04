@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { ActorModel } from './actor.model';
@@ -23,5 +23,13 @@ export class ActorService {
       };
     }
     return this.ActorModel.find(options);
+  }
+
+  async getBySlug(slug: string) {
+    const actorBySlug = await this.ActorModel.findOne({ slug });
+    if (!actorBySlug) {
+      throw new NotFoundException('Actor was not found');
+    }
+    return actorBySlug;
   }
 }
