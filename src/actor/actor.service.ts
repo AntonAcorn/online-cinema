@@ -53,7 +53,7 @@ export class ActorService {
     return actorToCreate.save();
   }
 
-  async updateActor(updateActorDto: UpdateActorDto, id: string) {
+  async updateActor(id: string, updateActorDto: UpdateActorDto) {
     const actorToUpdate = await this.ActorModel.findById(id);
     if (!actorToUpdate) {
       throw new NotFoundException('Actor was not found');
@@ -64,5 +64,9 @@ export class ActorService {
     actorToUpdate.photo = updateActorDto.photo;
 
     return actorToUpdate.save();
+  }
+
+  async deleteActorById(id: string) {
+    return this.ActorModel.findByIdAndDelete(id);
   }
 }

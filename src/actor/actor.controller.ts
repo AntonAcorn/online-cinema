@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Role } from 'src/user/role';
 import { ActorService } from './actor.service';
@@ -34,6 +43,7 @@ export class ActorController {
   }
 
   @Put('update/:id')
+  @Auth(Role.Admin)
   async updateActor(
     @Param('id') id: string,
     @Body() updateActorDto: UpdateActorDto
@@ -41,7 +51,9 @@ export class ActorController {
     return this.actorService.updateActor(id, updateActorDto);
   }
 
-  async deleteActor() {
-    return this.actorService.deleteActor();
+  @Delete('delete/:id')
+  @Auth(Role.Admin)
+  async deleteActor(@Param('id') id: string) {
+    return this.actorService.deleteActor(id);
   }
 }
