@@ -10,6 +10,7 @@ import { GenreModule } from './genre/genre.module';
 import { FileService } from './file/file.service';
 import { FileController } from './file/file.controller';
 import { FileModule } from './file/file.module';
+import { ActorModule } from './actor/actor.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { FileModule } from './file/file.module';
     UserModule,
     GenreModule,
     FileModule,
+    ActorModule,
   ],
   controllers: [AppController, FileController],
   providers: [AppService, FileService],
