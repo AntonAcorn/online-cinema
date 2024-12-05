@@ -11,6 +11,9 @@ import { FileService } from './file/file.service';
 import { FileController } from './file/file.controller';
 import { FileModule } from './file/file.module';
 import { ActorModule } from './actor/actor.module';
+import { MovieController } from './movie/movie.controller';
+import { MovieService } from './movie/movie.service';
+import { MovieModule } from './movie/movie.module';
 
 @Module({
   imports: [
@@ -25,8 +28,9 @@ import { ActorModule } from './actor/actor.module';
     GenreModule,
     FileModule,
     ActorModule,
+    MovieModule,
   ],
-  controllers: [AppController, FileController],
-  providers: [AppService, FileService],
+  controllers: [AppController, FileController, MovieController],
+  providers: [AppService, FileService, MovieService],
 })
 export class AppModule {}
