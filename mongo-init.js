@@ -14,6 +14,7 @@ db.createUser({
 db.createCollection('User');
 db.createCollection('Genre');
 db.createCollection('Actor');
+db.createCollection('Movie');
 
 db.User.insertOne({
   username: 'test_user',

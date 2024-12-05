@@ -25,7 +25,7 @@ export class MovieModel extends TimeStamps {
   @prop()
   bigPoster: string;
 
-  @prop({ unique: true })
+  @prop()
   title: string;
 
   @prop()
@@ -40,13 +40,13 @@ export class MovieModel extends TimeStamps {
   @prop({ default: 0 })
   countOpened?: number;
 
-  @prop({ unique: true })
+  @prop()
   videoUrl: string;
 
   @prop({ ref: () => ActorModel })
   actors: Ref<ActorModel>[];
 
-  @prop({ unique: true })
+  @prop()
   slug: string;
 
   @prop({ default: false })
