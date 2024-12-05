@@ -23,13 +23,19 @@ export default class MovieController {
     return this.movieService.getAll(searchTerm);
   }
 
+  @Get(':id')
+  // @Auth(Role.Admin)
+  async getMovieById(@Param('id') id: string) {
+    return this.movieService.getMovieById(id);
+  }
+
   @Get('slug/:slug')
-  async getBySlug(@Param('slug') slug: string) {
+  async getByMovieSlug(@Param('slug') slug: string) {
     return this.movieService.getMovieBySlug(slug);
   }
 
   @Get('actor/:actorId')
-  async getByActorId(@Param('actorId') actorId: Types.ObjectId) {
+  async getMovieByActorId(@Param('actorId') actorId: Types.ObjectId) {
     return this.movieService.getByActorId(actorId);
   }
 
@@ -57,5 +63,15 @@ export default class MovieController {
   @Auth(Role.Admin)
   async delete(@Param('id') id: string) {
     return this.movieService.delete(id);
+  }
+
+  @Post('increment-opening')
+  async updateOpening(@Body('slug') slug: string) {
+    return this.movieService.incrementCountOpening(slug);
+  }
+
+  @Get('/special/most-popular')
+  async getMostPopularMovie() {
+    return this.movieService.getMostPopularMovie();
   }
 }

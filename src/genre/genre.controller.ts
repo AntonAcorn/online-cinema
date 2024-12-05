@@ -43,7 +43,7 @@ export class GenreController {
   }
 
   @Post('create')
-  @Auth(Role.Admin)
+  // @Auth(Role.Admin)
   async createGenre(@Body() createGenreDto: CreateGenreDto) {
     return this.genreService.createGenre(createGenreDto);
   }

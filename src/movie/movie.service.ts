@@ -32,6 +32,10 @@ export class MovieService {
       .exec();
   }
 
+  async getMovieById(id: string) {
+    return this.movieModel.findById(id);
+  }
+
   async getByActorId(actorId: Types.ObjectId) {
     return this.movieModel.find({ actors: actorId }).exec();
   }
@@ -66,5 +70,19 @@ export class MovieService {
 
   async delete(id: string) {
     return this.movieModel.findByIdAndDelete(id);
+  }
+
+  async incrementCountOpening(slug: string) {
+    return this.movieModel.findOneAndUpdate(
+      { slug },
+      { $inc: { countOpened: 1 } }
+    );
+  }
+
+  async getMostPopularMovie() {
+    return this.movieModel
+      .find({ countOpened: { $gt: 0 } })
+      .sort({ countOpened: -1 })
+      .populate('genres');
   }
 }

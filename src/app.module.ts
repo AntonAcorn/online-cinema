@@ -10,7 +10,6 @@ import { FileController } from './file/file.controller';
 import { FileModule } from './file/file.module';
 import { FileService } from './file/file.service';
 import { GenreModule } from './genre/genre.module';
-import MovieController from './movie/movie.controller';
 import { MovieModule } from './movie/movie.module';
 import { UserModule } from './user/user.module';
 
@@ -29,7 +28,7 @@ import { UserModule } from './user/user.module';
     ActorModule,
     MovieModule,
   ],
-  controllers: [AppController, FileController, MovieController],
+  controllers: [AppController, FileController],
   providers: [AppService, FileService],
 })
 export class AppModule {}

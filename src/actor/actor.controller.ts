@@ -37,7 +37,7 @@ export class ActorController {
   }
 
   @Post('create')
-  @Auth(Role.Admin)
+  // @Auth(Role.Admin)
   async createActor(@Body() createActorDto: CreateActorDto) {
     return this.actorService.createActor(createActorDto);
   }
